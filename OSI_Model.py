@@ -34,34 +34,37 @@ if __name__ == "__main__":
     dl = DataLinkLayer()
     phys = PhysicalLayer()
 
-    message = "Hello, Network!"
-    print("Sending Data \n")
-    data = app.send(message)
+    data = "HTTP_REQUEST: Hello"
+    print("[Application] Sending data: ", data)
+
+    # Simulate the process
     data = pres.send(data)
+    # print("[Presentation] After Presentation layer: ", data)
     data = sess.send(data)
+    # print("[Session] After Session layer: ", data)
     data = trans.send(data)
+    # print("[Transport] After Transport layer: ", data)
     data = net.send(data)
+    # print("[Network] After Network layer: ", data)
     data = dl.send(data)
+    # print("[DataLink] After Data Link layer: ", data)
     data = phys.send(data)
+    # print("[Physical] After Physical layer: ", data)
 
-    print("\nReceiving Data \n")
-
-    # Receive the message through each layer in reverse order
+    # Receive data
     data = phys.receive(data)
+    # print("[Physical] After receiving data: ", data)
     data = dl.receive(data)
+    # print("[DataLink] After receiving from Data Link layer: ", data)
     data = net.receive(data)
+    # print("[Network] After receiving from Network layer: ", data)
     data = trans.receive(data)
+    # print("[Transport] After receiving from Transport layer: ", data)
     data = sess.receive(data)
+    # print("[Session] After receiving from Session layer: ", data)
     data = pres.receive(data)
+    # print("[Presentation] After receiving from Presentation layer: ", data)
     data = app.receive(data)
-
-    print("\n--- Receiving Data ---\n")
-    data = phys.receive(data)
-    data = dl.receive(data)
-    data = net.receive(data)
-    data = trans.receive(data)
-    data = sess.receive(data)
-    data = pres.receive(data)
-    data = app.receive(data)
+    # print("[Application] Final message: ", data)
 
     print(f"\nFinal message received: {data}\n")

@@ -26,14 +26,6 @@ def get_mac():
     return mac if mac else "MAC Address Unavailable"
 
 if __name__ == "__main__":
-    # Get local IP and MAC address
-    ip_address = get_local_ip()
-    mac_address = get_mac()
-
-    print(f"Local IP Address: {ip_address}")
-    print(f"MAC Address: {mac_address}")
-
-    # Initialize all layers
     app = ApplicationLayer()
     pres = PresentationLayer()
     sess = SessionLayer()
@@ -43,8 +35,7 @@ if __name__ == "__main__":
     phys = PhysicalLayer()
 
     message = "Hello, Network!"
-
-    print("\n--- Sending Data ---\n")
+    print("Sending Data \n")
     data = app.send(message)
     data = pres.send(data)
     data = sess.send(data)
@@ -52,6 +43,17 @@ if __name__ == "__main__":
     data = net.send(data)
     data = dl.send(data)
     data = phys.send(data)
+
+    print("\nReceiving Data \n")
+
+    # Receive the message through each layer in reverse order
+    data = phys.receive(data)
+    data = dl.receive(data)
+    data = net.receive(data)
+    data = trans.receive(data)
+    data = sess.receive(data)
+    data = pres.receive(data)
+    data = app.receive(data)
 
     print("\n--- Receiving Data ---\n")
     data = phys.receive(data)

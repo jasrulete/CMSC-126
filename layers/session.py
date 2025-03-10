@@ -4,5 +4,7 @@ class SessionLayer:
         return f"SESSION_START|{data}|SESSION_END"
 
     def receive(self, data):
-        print("[Session] Restoring session state...")
-        return data.split('|')[1]
+        print("[Session] Managing session state...")
+        if data.startswith("SESSION_START|") and data.endswith("|SESSION_END"):
+            return data.replace("SESSION_START|", "").replace("|SESSION_END", "")
+        return "[Error] Malformed session data"

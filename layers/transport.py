@@ -1,14 +1,11 @@
 class TransportLayer:
     def send(self, data):
         print("[Transport] Sequencing and error checking...")
-        segment = f"SEQ:1|{data}|ACK"
-        return segment
+        return f"SEQ:1|{data}|ACK"
 
-    def receive(self, segment):
-        print(f"[Transport] Validating sequence and acknowledging... Received Segment: {segment}")
-        parts = segment.split('|')
-        if len(parts) < 3:  # Expecting at least "SEQ:x|data|ACK"
-            raise ValueError(f"[Transport] Malformed segment received: {segment}")
-        
-        # Extract data (ignoring SEQ:x and ACK)
-        return '|'.join(parts[1:-1])
+    def receive(self, data):
+        print("[Transport] Sequencing and error checking...")
+        parts = data.split("|")
+        if len(parts) >= 3 and parts[0] == "SEQ:1" and parts[-1] == "ACK":
+            return "|".join(parts[1:-1])
+        return "[Error] Invalid transport data format."

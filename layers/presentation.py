@@ -7,4 +7,7 @@ class PresentationLayer:
 
     def receive(self, data):
         print("[Presentation] Decoding data...")
-        return base64.b64decode(data.encode()).decode()
+        try:
+            return base64.b64decode(data).decode()
+        except Exception as e:
+            return f"[Error] Decoding failed: {e}"

@@ -1,14 +1,10 @@
 class DataLinkLayer:
     def send(self, data):
-        print(f"[Data Link] Framing data... Data: {data}")
-        frame = f"MAC_HEADER|{data}|MAC_TRAILER"
-        return frame
+        print("[Data Link] Framing data...")
+        return f"MAC_HEADER|{data}|MAC_TRAILER"
 
-    def receive(self, frame):
-        print(f"[Data Link] Removing MAC frame... Received Frame: {frame}")
-        parts = frame.split('|')
-        if len(parts) < 3:  # Expecting at least "MAC_HEADER|data|MAC_TRAILER"
-            raise ValueError(f"[Data Link] Malformed frame received: {frame}")
-        
-        # Extract data (ignore first and last parts)
-        return '|'.join(parts[1:-1])
+    def receive(self, data):
+        print("[Data Link] Unframing data...")
+        if data.startswith("MAC_HEADER|") and data.endswith("|MAC_TRAILER"):
+            return data.replace("MAC_HEADER|", "").replace("|MAC_TRAILER", "")
+        return "[Error] Corrupted frame at Data Link Layer."

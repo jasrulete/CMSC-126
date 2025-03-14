@@ -1,5 +1,5 @@
 import socket
-from getmac import get_mac_address
+import uuid
 
 from layers.application import ApplicationLayer
 from layers.presentation import PresentationLayer
@@ -20,9 +20,9 @@ def get_local_ip():
     except Exception as e:
         return f"Error getting local IP address: {e}"
 
-# Function to get the MAC address
+# Function to get the MAC address without using 'getmac'
 def get_mac():
-    mac = get_mac_address()
+    mac = ':'.join(['{:02x}'.format((uuid.getnode() >> i) & 0xff) for i in range(0, 48, 8)][::-1])
     return mac if mac else "MAC Address Unavailable"
 
 if __name__ == "__main__":
@@ -37,34 +37,25 @@ if __name__ == "__main__":
     data = "HTTP_REQUEST: Hello"
     print("[Application] Sending data: ", data)
 
-    # Simulate the process
+    # Simulate the process through OSI layers
     data = pres.send(data)
-    # print("[Presentation] After Presentation layer: ", data)
     data = sess.send(data)
-    # print("[Session] After Session layer: ", data)
     data = trans.send(data)
-    # print("[Transport] After Transport layer: ", data)
     data = net.send(data)
-    # print("[Network] After Network layer: ", data)
     data = dl.send(data)
-    # print("[DataLink] After Data Link layer: ", data)
     data = phys.send(data)
-    # print("[Physical] After Physical layer: ", data)
 
     # Receive data
     data = phys.receive(data)
-    # print("[Physical] After receiving data: ", data)
     data = dl.receive(data)
-    # print("[DataLink] After receiving from Data Link layer: ", data)
     data = net.receive(data)
-    # print("[Network] After receiving from Network layer: ", data)
     data = trans.receive(data)
-    # print("[Transport] After receiving from Transport layer: ", data)
     data = sess.receive(data)
-    # print("[Session] After receiving from Session layer: ", data)
     data = pres.receive(data)
-    # print("[Presentation] After receiving from Presentation layer: ", data)
     data = app.receive(data)
-    # print("[Application] Final message: ", data)
 
     print(f"\nFinal message received: {data}\n")
+
+    # Print network details
+    print(f"Local IP Address: {get_local_ip()}")
+    print(f"MAC Address: {get_mac()}")
